@@ -4,8 +4,12 @@ using System.Collections;
 public class PlayerManager : MonoBehaviour {
 	public float moveSpeed;
 	public float tiltAmount;
+	public GameObject boltPrefab;
+	public Transform boltSpawn;
+	public float refireWait;
 
 	private Rigidbody rb;
+	private float nextFire;
 
 	void Start () {
 		rb = GetComponent<Rigidbody>();
@@ -14,6 +18,7 @@ public class PlayerManager : MonoBehaviour {
 	void Update () {
 		movePlayer();
 		tiltPlayer();
+		fireOnClick();
 	}
 	void movePlayer(){
 		float xInput = Input.GetAxis("Horizontal") * moveSpeed;
@@ -23,5 +28,12 @@ public class PlayerManager : MonoBehaviour {
 	void tiltPlayer(){
 		float xInput = Input.GetAxis("Horizontal") * -tiltAmount;
 		transform.rotation = Quaternion.Euler(Vector3.forward * xInput);
+	}
+	void fireOnClick(){
+		if(Input.GetButton("Fire1")&& Time.time > nextFire || Input.GetButtonDown("Fire1")){
+			Instantiate(boltPrefab,boltSpawn.position,boltSpawn.rotation);
+			nextFire = Time.time + refireWait;
+		}
+
 	}
 }
