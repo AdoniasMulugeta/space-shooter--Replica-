@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 	void checkBoundary(){
-		float xClamp = Mathf.Clamp(transform.position.x,boundary.right,boundary.left);
+		float xClamp = Mathf.Clamp(transform.position.x,boundary.left,boundary.right);
 		float zClamp = Mathf.Clamp(transform.position.z,boundary.bottom,boundary.top);
 		float yClamp = transform.position.y;
 		transform.position = Vector3.right * xClamp + Vector3.up * yClamp + Vector3.forward * zClamp;
