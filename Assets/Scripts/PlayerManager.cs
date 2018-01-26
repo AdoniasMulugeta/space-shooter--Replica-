@@ -16,15 +16,22 @@ public class PlayerManager : MonoBehaviour {
 
 	private Rigidbody rb;
 	private float nextFire;
+	private bool movementLocked;
+
+	public delegate void playerEvents();
+	public static event playerEvents eventPlayerDied;
 
 	void Start () {
 		rb = GetComponent<Rigidbody>();
+		movementLocked = false;
 	}
 
 	void Update () {
-		movePlayer();
-		tiltPlayer();
-		fireOnClick();
+		if(!movementLocked){
+			movePlayer();
+			tiltPlayer();
+			fireOnClick();
+		}
 	}
 	void movePlayer(){
 		float xInput = Input.GetAxis("Horizontal") * moveSpeed;
@@ -47,5 +54,17 @@ public class PlayerManager : MonoBehaviour {
 		float zClamp = Mathf.Clamp(transform.position.z,boundary.bottom,boundary.top);
 		float yClamp = transform.position.y;
 		transform.position = Vector3.right * xClamp + Vector3.up * yClamp + Vector3.forward * zClamp;
+	}
+	void playerDied(){
+		movementLocked = true;
+		if(eventPlayerDied!=null)eventPlayerDied();
+	}
+
+	void OnEnable(){
+		DestroyOnContact.eventPlayerDestroyed += playerDied;
+	}
+	void OnDisable(){
+		DestroyOnContact.eventPlayerDestroyed -= playerDied;
+
 	}
 }
